@@ -1,12 +1,12 @@
-# Chromium + bağımlılıkları hazır gelen base image
 FROM ghcr.io/puppeteer/puppeteer:22.10.0
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 
-# Türkçe karakterler için geniş font seti önerilir
+USER root
 RUN apt-get update && apt-get install -y fonts-noto fonts-dejavu-core && rm -rf /var/lib/apt/lists/*
+USER pptruser
 
 COPY . .
 ENV NODE_ENV=production
