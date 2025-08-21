@@ -43,31 +43,29 @@ app.get("/healthz", (_req, res) => res.json({ ok: true }));
 app.post("/convert", async (req, res) => {
   try {
     const {
-      source,             // HTML string
-      url,                // alternatif: işlenecek URL
-      landscape = false,
-      use_print = true,   // printBackground
-      margin,             // "0.5in" ya da { top,right,bottom,left }
-      format = "A4",      // A4, Letter, vs.
-      headerHTML,         // opsiyonel
-      footerHTML,         // opsiyonel
+      source,             // HTML string (zorunlu)
+      type,               // 🔹 "pitchdeck" => yatay, "normal"/boş => dikey
+      use_print = true,
+      margin,
+      format = "A4",
+      headerHTML,
+      footerHTML,
       waitUntil = "networkidle0",
       timeout_ms = 30000
     } = req.body || {};
 
-    if (!source && !url) {
-      return res.status(400).json({ error: "Provide 'source' (HTML) or 'url'." });
+    if (!source) {
+      return res.status(400).json({ error: "Provide 'source' (HTML)." });
     }
 
     const br = await getBrowser();
     const page = await br.newPage();
     await page.setExtraHTTPHeaders({ "Accept-Language": "tr-TR,tr;q=0.9" });
 
-    if (source) {
-      await page.setContent(source, { waitUntil, timeout: timeout_ms });
-    } else {
-      await page.goto(url, { waitUntil, timeout: timeout_ms });
-    }
+    await page.setContent(source, { waitUntil, timeout: timeout_ms });
+
+    // 🔹 type parametresine göre landscape seçimi
+    const landscape = type === "pitchdeck";
 
     const pdf = await page.pdf({
       format,
