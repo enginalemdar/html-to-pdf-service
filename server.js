@@ -31,10 +31,10 @@ function normalizeMargin(m) {
   if (!m) return { top: "0.5in", right: "0.5in", bottom: "0.5in", left: "0.5in" };
   if (typeof m === "string") return { top: m, right: m, bottom: m, left: m };
   return {
-    top: m.top ?? "0.5in",
-    right: m.right ?? "0.5in",
-    bottom: m.bottom ?? "0.5in",
-    left: m.left ?? "0.5in",
+    top: m.top ?? "0.2in",
+    right: m.right ?? "0.2in",
+    bottom: m.bottom ?? "0.2in",
+    left: m.left ?? "0.2in",
   };
 }
 
